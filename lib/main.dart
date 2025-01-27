@@ -1,5 +1,6 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 void main() {
   runApp(const MyApp());
@@ -39,6 +40,17 @@ class _MyHomePageState extends State<MyHomePage> {
     });
   }
 
+  Future<void> _openUrl() async {
+    const url = 'https://flutter.dev'; // 遷移先のURL
+    if (await canLaunchUrl(Uri.parse(url))) {
+      await launchUrl(Uri.parse(url));
+    } else {
+      if (kDebugMode) {
+        print('Could not launch $url');
+      }
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -50,7 +62,6 @@ class _MyHomePageState extends State<MyHomePage> {
             icon: const Icon(Icons.settings),
             tooltip: 'Settings',
             onPressed: () {
-              // 設定ボタンを押したときの処理
               if (kDebugMode) {
                 print('Settings button pressed');
               }
@@ -60,7 +71,6 @@ class _MyHomePageState extends State<MyHomePage> {
             icon: const Icon(Icons.logout),
             tooltip: 'Logout',
             onPressed: () {
-              // ログアウトボタンを押したときの処理
               if (kDebugMode) {
                 print('Logout button pressed');
               }
@@ -73,8 +83,30 @@ class _MyHomePageState extends State<MyHomePage> {
           // 背景画像
           SizedBox.expand(
             child: Image.asset(
-              'assets/background.jpg', // 画像ファイルのパス
-              fit: BoxFit.cover, // 画面全体を覆う
+              'assets/background.jpg',
+              fit: BoxFit.cover,
+            ),
+          ),
+          // バナー
+          Positioned(
+            top: 0,
+            left: 0,
+            right: 0,
+            child: GestureDetector(
+              onTap: _openUrl,
+              child: Container(
+                color: Colors.blueAccent,
+                padding: const EdgeInsets.symmetric(vertical: 16),
+                child: const Text(
+                  'Visit Flutter Website',
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 16,
+                    fontWeight: FontWeight.bold,
+                  ),
+                  textAlign: TextAlign.center,
+                ),
+              ),
             ),
           ),
           // メインコンテンツ
@@ -97,7 +129,7 @@ class _MyHomePageState extends State<MyHomePage> {
             child: FloatingActionButton(
               onPressed: () {
                 setState(() {
-                  _counter += 2; // カウンターを2増やす
+                  _counter += 2;
                 });
               },
               tooltip: 'Left Button',
