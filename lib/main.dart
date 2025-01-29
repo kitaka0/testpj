@@ -45,9 +45,12 @@ class _MyHomePageState extends State<MyHomePage> {
 
   Future<void> _openUrl() async {
     const url = 'https://flutter.dev'; // 開くURL
-    if (await canLaunchUrl(Uri.parse(url))) {
-      // URLが開けるか確認
-      await launchUrl(Uri.parse(url)); // URLを開く
+    final Uri uri = Uri.parse(url); // URLをUriに変換
+    if (await canLaunchUrl(uri)) {
+      await launchUrl(
+        uri,
+        mode: LaunchMode.externalApplication, // 外部ブラウザでURLを開く
+      );
     } else {
       if (kDebugMode) {
         // デバッグモードの場合のみログを表示
