@@ -1,51 +1,56 @@
-import 'package:flutter/foundation.dart';
-import 'package:flutter/material.dart';
-import 'package:url_launcher/url_launcher.dart';
+import 'package:flutter/foundation.dart'; // Flutterの開発モードやデバッグモードの情報を取得するためのパッケージ
+import 'package:flutter/material.dart'; // Flutterの基本的なUIコンポーネントを提供するパッケージ
+import 'package:url_launcher/url_launcher.dart'; // URLを開くためのパッケージ
 
 void main() {
-  runApp(const MyApp());
+  runApp(const MyApp()); // MyAppウィジェットをアプリのエントリーポイントとして実行
 }
 
 class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+  const MyApp({super.key}); // MyAppのコンストラクタ
 
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Flutter Demo',
+      title: 'Flutter Demo', // アプリのタイトル
       theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
-        useMaterial3: true,
+        colorScheme:
+            ColorScheme.fromSeed(seedColor: Colors.deepPurple), // アプリのテーマカラー（紫）
+        useMaterial3: true, // Material3スタイルを使用する
       ),
-      home: const MyHomePage(title: 'Flutter Demo Home Page'),
+      home: const MyHomePage(
+          title: 'Flutter Demo Home Page'), // アプリのホームページにMyHomePageウィジェットを設定
     );
   }
 }
 
 class MyHomePage extends StatefulWidget {
-  const MyHomePage({super.key, required this.title});
+  const MyHomePage({super.key, required this.title}); // MyHomePageのコンストラクタ
 
-  final String title;
+  final String title; // タイトルの文字列
 
   @override
-  State<MyHomePage> createState() => _MyHomePageState();
+  State<MyHomePage> createState() =>
+      _MyHomePageState(); // MyHomePageの状態管理クラスを作成
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  int _counter = 0;
+  int _counter = 0; // カウンターの初期値
 
   void _incrementCounter() {
     setState(() {
-      _counter++;
+      _counter++; // カウンターをインクリメント
     });
   }
 
   Future<void> _openUrl() async {
-    const url = 'https://flutter.dev'; // 遷移先のURL
+    const url = 'https://flutter.dev'; // 開くURL
     if (await canLaunchUrl(Uri.parse(url))) {
-      await launchUrl(Uri.parse(url));
+      // URLが開けるか確認
+      await launchUrl(Uri.parse(url)); // URLを開く
     } else {
       if (kDebugMode) {
+        // デバッグモードの場合のみログを表示
         print('Could not launch $url');
       }
     }
@@ -54,24 +59,32 @@ class _MyHomePageState extends State<MyHomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      extendBodyBehindAppBar: true, // 🔹 AppBarを背景画像の上に配置する
       appBar: AppBar(
-        backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-        title: Text(widget.title),
+        backgroundColor: Colors.transparent, // 🔹 AppBarの背景を透明に
+        elevation: 0, // 🔹 AppBarの影を消す
+        title: Text(
+          widget.title, // 🔹 タイトルを表示
+          style: const TextStyle(color: Colors.white), // 🔹 タイトルの色を白に
+        ),
+        iconTheme: const IconThemeData(color: Colors.white), // 🔹 アイコンの色を白に
         actions: [
           IconButton(
-            icon: const Icon(Icons.settings),
-            tooltip: 'Settings',
+            icon: const Icon(Icons.settings), // 設定アイコン
+            tooltip: 'Settings', // ツールチップを設定
             onPressed: () {
               if (kDebugMode) {
+                // デバッグモードでのアクション
                 print('Settings button pressed');
               }
             },
           ),
           IconButton(
-            icon: const Icon(Icons.logout),
-            tooltip: 'Logout',
+            icon: const Icon(Icons.logout), // ログアウトアイコン
+            tooltip: 'Logout', // ツールチップを設定
             onPressed: () {
               if (kDebugMode) {
+                // デバッグモードでのアクション
                 print('Logout button pressed');
               }
             },
@@ -79,69 +92,61 @@ class _MyHomePageState extends State<MyHomePage> {
         ],
       ),
       body: Stack(
+        // スタックウィジェットを使用して複数の要素を重ねる
         children: [
           // 背景画像
-          SizedBox.expand(
+          Positioned.fill(
             child: Image.asset(
-              'assets/background.jpg',
-              fit: BoxFit.cover,
+              'assets/background.jpg', // アセットから背景画像を読み込む
+              fit: BoxFit.cover, // 画像が画面いっぱいに広がるように調整
             ),
           ),
-          // バナー
-          Positioned(
-            top: 0,
-            left: 0,
-            right: 0,
-            child: GestureDetector(
-              onTap: _openUrl,
-              child: Container(
-                color: Colors.blueAccent,
-                padding: const EdgeInsets.symmetric(vertical: 16),
-                child: const Text(
-                  'Visit Flutter Website',
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontSize: 16,
-                    fontWeight: FontWeight.bold,
-                  ),
-                  textAlign: TextAlign.center,
-                ),
-              ),
-            ),
-          ),
-          // メインコンテンツ
+
+          // メインコンテンツ（カウンター）
           Center(
             child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
+              mainAxisAlignment: MainAxisAlignment.center, // 中央揃え
               children: <Widget>[
                 const Text('You have pushed the button this many times:'),
                 Text(
-                  '$_counter',
-                  style: Theme.of(context).textTheme.headlineMedium,
+                  '$_counter', // カウンターの値を表示
+                  style:
+                      Theme.of(context).textTheme.headlineMedium, // テーマのスタイルを使用
                 ),
               ],
             ),
           ),
-          // 左下のボタン
+
+          // バナー（AppBarの下に配置）
           Positioned(
-            bottom: 16,
-            left: 16,
-            child: FloatingActionButton(
-              onPressed: () {
-                setState(() {
-                  _counter += 2;
-                });
-              },
-              tooltip: 'Left Button',
-              child: const Icon(Icons.arrow_back),
+            top: kToolbarHeight + 70, // ← AppBarの高さ分下げる
+            left: 0,
+            right: 0,
+            child: GestureDetector(
+              onTap: _openUrl, // バナーがタップされたときにURLを開く
+              child: Container(
+                width: double.infinity, // 横幅を画面全体に広げる
+                height: 100, // バナーの高さを調整
+                color: Colors.blueAccent, // バナーの色
+                alignment: Alignment.center, // テキストを中央に配置
+                child: const Text(
+                  'Visit Flutter Website', // バナーに表示するテキスト
+                  style: TextStyle(
+                    color: Colors.white, // テキストの色を白に
+                    fontSize: 18, // フォントサイズを18に設定
+                    fontWeight: FontWeight.bold, // 太字に設定
+                  ),
+                  textAlign: TextAlign.center, // テキストを中央揃え
+                ),
+              ),
             ),
           ),
         ],
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed: _incrementCounter,
-        tooltip: 'Increment',
-        child: const Icon(Icons.add),
+        onPressed: _incrementCounter, // ボタンが押されたときにカウンターを増やす
+        tooltip: 'Increment', // ツールチップ
+        child: const Icon(Icons.add), // プラスアイコン
       ),
     );
   }
