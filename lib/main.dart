@@ -107,22 +107,8 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
           ),
 
           // 画面中央にスイカたちを横並びで表示
-          Center(
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.center, // 横並びに配置
-              children: List.generate(
-                crops.length, // cropsはCrop型のリスト
-                (index) => Padding(
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 8.0), // 画像間の間隔
-                  child: Image.asset(
-                    crops[index].imagePath, // CropオブジェクトからimagePathを取得
-                    height: 100, // 画像の高さを設定
-                  ),
-                ),
-              ),
-            ),
-          ),
+          const Center(child: CropDisplay()), // crops.dartから呼びだしてるらしい
+
           // バナー（AppBarの下に配置）
           Positioned(
             top: kToolbarHeight + 70, // ← AppBarの高さ分下げる
@@ -148,11 +134,6 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
             ),
           ),
         ],
-      ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: _incrementCounter, // ボタンが押されたときにカウンターを増やす
-        tooltip: 'Increment', // ツールチップ
-        child: const Icon(Icons.add), // プラスアイコン
       ),
     );
   }
