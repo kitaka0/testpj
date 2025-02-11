@@ -1,5 +1,6 @@
 import 'package:flutter/foundation.dart'; // Flutterの開発モードやデバッグモードの情報を取得するためのパッケージ
 import 'package:flutter/material.dart'; // Flutterの基本的なUIコンポーネントを提供するパッケージ
+import 'model/crops.dart'; // crops.dart をインポート
 import 'package:url_launcher/url_launcher.dart'; // URLを開くためのパッケージ
 
 void main() {
@@ -20,6 +21,9 @@ class MyApp extends StatelessWidget {
       ),
       home: const MyHomePage(
           title: 'Flutter Demo Home Page'), // アプリのホームページにMyHomePageウィジェットを設定
+      routes: {
+        '/settings': (context) => const SettingsPage(), // 設定ページへのルートを追加
+      },
     );
   }
 }
@@ -34,14 +38,8 @@ class MyHomePage extends StatefulWidget {
       _MyHomePageState(); // MyHomePageの状態管理クラスを作成
 }
 
-class _MyHomePageState extends State<MyHomePage> {
-  int _counter = 0; // カウンターの初期値
-
-  void _incrementCounter() {
-    setState(() {
-      _counter++; // カウンターをインクリメント
-    });
-  }
+class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
+  late AnimationController _animationController;
 
   Future<void> _openUrl() async {
     const url = 'https://flutter.dev'; // 開くURL
@@ -57,6 +55,12 @@ class _MyHomePageState extends State<MyHomePage> {
         print('Could not launch $url');
       }
     }
+  }
+
+  @override
+  void dispose() {
+    _animationController.dispose(); // アニメーションコントローラーを解放
+    super.dispose();
   }
 
   @override
@@ -76,10 +80,7 @@ class _MyHomePageState extends State<MyHomePage> {
             icon: const Icon(Icons.settings), // 設定アイコン
             tooltip: 'Settings', // ツールチップを設定
             onPressed: () {
-              if (kDebugMode) {
-                // デバッグモードでのアクション
-                print('Settings button pressed');
-              }
+              Navigator.pushNamed(context, '/settings'); // 設定画面に遷移
             },
           ),
           IconButton(
@@ -105,21 +106,23 @@ class _MyHomePageState extends State<MyHomePage> {
             ),
           ),
 
-          // メインコンテンツ（カウンター）
+          // 画面中央にスイカたちを横並びで表示
           Center(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center, // 中央揃え
-              children: <Widget>[
-                const Text('You have pushed the button this many times:'),
-                Text(
-                  '$_counter', // カウンターの値を表示
-                  style:
-                      Theme.of(context).textTheme.headlineMedium, // テーマのスタイルを使用
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center, // 横並びに配置
+              children: List.generate(
+                crops.length, // cropsはCrop型のリスト
+                (index) => Padding(
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 8.0), // 画像間の間隔
+                  child: Image.asset(
+                    crops[index].imagePath, // CropオブジェクトからimagePathを取得
+                    height: 100, // 画像の高さを設定
+                  ),
                 ),
-              ],
+              ),
             ),
           ),
-
           // バナー（AppBarの下に配置）
           Positioned(
             top: kToolbarHeight + 70, // ← AppBarの高さ分下げる
@@ -150,6 +153,46 @@ class _MyHomePageState extends State<MyHomePage> {
         onPressed: _incrementCounter, // ボタンが押されたときにカウンターを増やす
         tooltip: 'Increment', // ツールチップ
         child: const Icon(Icons.add), // プラスアイコン
+      ),
+    );
+  }
+}
+
+// 設定画面
+class SettingsPage extends StatelessWidget {
+  const SettingsPage({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('Settings'),
+        backgroundColor: Colors.deepPurple,
+      ),
+      body: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Column(
+          children: [
+            ListTile(
+              title: const Text('Setting 1'),
+              trailing: Switch(
+                value: true,
+                onChanged: (bool value) {
+                  // 設定の変更
+                },
+              ),
+            ),
+            ListTile(
+              title: const Text('Setting 2'),
+              trailing: Switch(
+                value: false,
+                onChanged: (bool value) {
+                  // 設定の変更
+                },
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
