@@ -123,7 +123,7 @@ class CropDisplayState extends State<CropDisplay> {
                 child: Column(
                   children: [
                     Image.asset(
-                      crops[index].imagePath, // 現在の成長段階に応じた画像を表示
+                      crops[index].imagePath, // 現在の成長段階に応じた画像を表示sdfdfsdf
                       height: 100, // 画像の高さを100に設定
                     ),
                     // 苗の時だけプログレスバーを表示
