@@ -75,7 +75,7 @@ class BoxDisplayState extends State<BoxDisplay> {
               alignment: Alignment.center,
               children: [
                 Image.asset(
-                  'assets/images/box_empty.png',
+                  'assets/images/box_full.png',
                   width: 100,
                   height: 100,
                 ),
