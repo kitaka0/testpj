@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 
 class BoxDisplay extends StatefulWidget {
-  const BoxDisplay({super.key});
+  final Function(String) onShipment; // 履歴を更新するための関数
+
+  const BoxDisplay({super.key, required this.onShipment});
 
   @override
   BoxDisplayState createState() => BoxDisplayState();
@@ -9,6 +11,7 @@ class BoxDisplay extends StatefulWidget {
 
 class BoxDisplayState extends State<BoxDisplay> {
   int counter = 0; // カウントの初期値
+  List<String> shipmentHistory = []; // 出荷履歴を管理
 
   // カウントを増やす処理
   void _incrementCounter() {
@@ -23,17 +26,28 @@ class BoxDisplayState extends State<BoxDisplay> {
       setState(() {
         counter -= 15; // 出荷処理として15減らす
       });
+
+      // 出荷履歴に追加
+      final shipmentEntry = '出荷しました: ${DateTime.now().toLocal()}';
+      widget.onShipment(shipmentEntry); // 親ウィジェットに履歴を通知
+
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text('出荷しました！')),
       );
+
+      // 出荷後にダイアログを閉じる
+      Navigator.of(context).pop(); // ダイアログを閉じる
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text('出荷には15以上が必要です')),
       );
+
+      // 出荷できない場合もダイアログを閉じる
+      Navigator.of(context).pop(); // ダイアログを閉じる
     }
   }
 
-  // ダイアログを表示
+// ダイアログを表示
   void _showDialog(BuildContext context) {
     showDialog(
       context: context,
@@ -44,14 +58,13 @@ class BoxDisplayState extends State<BoxDisplay> {
           actions: <Widget>[
             TextButton(
               onPressed: () {
-                Navigator.of(context).pop();
+                Navigator.of(context).pop(); // ダイアログを閉じる
               },
               child: const Text('そのまま'),
             ),
             TextButton(
               onPressed: () {
                 _handleShipping(context); // 出荷処理を実行
-                Navigator.of(context).pop();
               },
               child: const Text('出荷する'),
             ),
@@ -75,7 +88,9 @@ class BoxDisplayState extends State<BoxDisplay> {
               alignment: Alignment.center,
               children: [
                 Image.asset(
-                  'assets/images/box_full.png',
+                  counter >= 15
+                      ? 'assets/images/box_full.png'
+                      : 'assets/images/box_empty.png',
                   width: 100,
                   height: 100,
                 ),
@@ -93,7 +108,7 @@ class BoxDisplayState extends State<BoxDisplay> {
         ),
         Positioned(
           bottom: 16,
-          left: 120, // 箱の横に配置するため位置調整
+          left: 120,
           child: FloatingActionButton(
             onPressed: _incrementCounter, // ＋ボタンでカウントを増やす
             child: const Icon(Icons.add),

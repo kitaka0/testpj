@@ -1,9 +1,11 @@
 import 'package:flutter/foundation.dart'; // Flutterの開発モードやデバッグモードの情報を取得するためのパッケージ
 import 'package:flutter/material.dart'; // Flutterの基本的なUIコンポーネントを提供するパッケージ
+import 'account.dart';
 import 'model/box.dart';
 import 'model/bugs.dart';
 import 'model/crops.dart'; // crops.dart をインポート
-import 'package:url_launcher/url_launcher.dart'; // URLを開くためのパッケージ
+import 'package:url_launcher/url_launcher.dart';
+import 'shipment_history.dart'; // URLを開くためのパッケージ
 
 void main() {
   runApp(const MyApp()); // MyAppウィジェットをアプリのエントリーポイントとして実行
@@ -24,7 +26,8 @@ class MyApp extends StatelessWidget {
       home: const MyHomePage(
           title: 'Flutter Demo Home Page'), // アプリのホームページにMyHomePageウィジェットを設定
       routes: {
-        '/settings': (context) => const SettingsPage(), // 設定ページへのルートを追加
+        '/settings': (context) => const SettingsPage(), // 設定ページ
+        '/account': (context) => const AccountPage(), // アカウントページ
       },
     );
   }
@@ -42,7 +45,16 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
   late AnimationController _animationController;
-  int counter = 0; // Boxのカウント値を初期化
+  int counter = 0;
+
+  List<String> shipmentHistory = []; // 親ウィジェットで履歴を管理
+
+  // 出荷履歴を更新するための関数
+  void _updateShipmentHistory(String shipmentEntry) {
+    setState(() {
+      shipmentHistory.add(shipmentEntry); // 出荷履歴を更新
+    });
+  }
 
   Future<void> _openUrl() async {
     const url = 'https://flutter.dev'; // 開くURL
@@ -80,20 +92,24 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
         iconTheme: const IconThemeData(color: Colors.white), // 🔹 アイコンの色を白に
         actions: [
           IconButton(
-            icon: const Icon(Icons.settings), // 設定アイコン
-            tooltip: 'Settings', // ツールチップを設定
+            icon: const Icon(Icons.history),
             onPressed: () {
-              Navigator.pushNamed(context, '/settings'); // 設定画面に遷移
+              // 履歴画面に遷移
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => ShipmentHistoryPage(
+                    history: shipmentHistory,
+                  ),
+                ),
+              );
             },
           ),
           IconButton(
-            icon: const Icon(Icons.logout), // ログアウトアイコン
-            tooltip: 'Logout', // ツールチップを設定
+            icon: const Icon(Icons.account_circle), // アカウントアイコン
+            tooltip: 'Account', // ツールチップを設定
             onPressed: () {
-              if (kDebugMode) {
-                // デバッグモードでのアクション
-                print('Logout button pressed');
-              }
+              Navigator.pushNamed(context, '/account'); // アカウント画面に遷移
             },
           ),
         ],
@@ -115,8 +131,7 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
           // 虫
           BugDisplay(),
           // 箱
-          BoxDisplay(),
-
+          BoxDisplay(onShipment: _updateShipmentHistory),
           // バナー（AppBarの下に配置）
           Positioned(
             top: kToolbarHeight + 70, // ← AppBarの高さ分下げる
