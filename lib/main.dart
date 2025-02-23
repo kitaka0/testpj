@@ -1,7 +1,8 @@
 import 'package:flutter/foundation.dart'; // Flutterの開発モードやデバッグモードの情報を取得するためのパッケージ
 import 'package:flutter/material.dart'; // Flutterの基本的なUIコンポーネントを提供するパッケージ
-import 'model/crops.dart'; // crops.dart をインポート
+import 'model/box.dart';
 import 'model/bugs.dart';
+import 'model/crops.dart'; // crops.dart をインポート
 import 'package:url_launcher/url_launcher.dart'; // URLを開くためのパッケージ
 
 void main() {
@@ -41,6 +42,7 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
   late AnimationController _animationController;
+  int counter = 0; // Boxのカウント値を初期化
 
   Future<void> _openUrl() async {
     const url = 'https://flutter.dev'; // 開くURL
@@ -112,6 +114,8 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
 
           // 虫
           BugDisplay(),
+          // 箱
+          BoxDisplay(),
 
           // バナー（AppBarの下に配置）
           Positioned(
