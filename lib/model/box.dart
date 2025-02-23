@@ -1,42 +1,39 @@
 import 'package:flutter/material.dart';
 
-// 箱を表示するウィジェット（左下に配置）
-class BoxDisplay extends StatelessWidget {
-  final int counter; // 現在のカウント値
-  final VoidCallback onShip; // 「出荷する」時に呼ばれるコールバック
-
-  const BoxDisplay({super.key, required this.counter, required this.onShip});
+class BoxDisplay extends StatefulWidget {
+  const BoxDisplay({super.key});
 
   @override
-  Widget build(BuildContext context) {
-    return Positioned(
-      bottom: 16, // 画面下から16ピクセルの位置
-      left: 16, // 画面左から16ピクセルの位置
-      child: GestureDetector(
-        onTap: () => _showDialog(context), // 箱をタップしたときにダイアログを表示
-        child: Stack(
-          alignment: Alignment.center,
-          children: [
-            Image.asset(
-              'assets/images/box_empty.png', // 箱の画像ファイル
-              width: 100, // 幅
-              height: 100, // 高さ
-            ),
-            Text(
-              '$counter/15', // カウント表示
-              style: const TextStyle(
-                color: Colors.white, // テキストの色
-                fontSize: 24, // フォントサイズを少し大きく
-                fontWeight: FontWeight.bold, // 太字
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
+  BoxDisplayState createState() => BoxDisplayState();
+}
+
+class BoxDisplayState extends State<BoxDisplay> {
+  int counter = 0; // カウントの初期値
+
+  // カウントを増やす処理
+  void _incrementCounter() {
+    setState(() {
+      counter++; // 1増やす
+    });
   }
 
-  // ダイアログを表示するメソッド
+  // 出荷処理（15以上で出荷、出荷後はカウントを15減らす）
+  void _handleShipping(BuildContext context) {
+    if (counter >= 15) {
+      setState(() {
+        counter -= 15; // 出荷処理として15減らす
+      });
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('出荷しました！')),
+      );
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('出荷には15以上が必要です')),
+      );
+    }
+  }
+
+  // ダイアログを表示
   void _showDialog(BuildContext context) {
     showDialog(
       context: context,
@@ -47,22 +44,62 @@ class BoxDisplay extends StatelessWidget {
           actions: <Widget>[
             TextButton(
               onPressed: () {
-                // 「そのまま」ボタンが押された場合の処理
-                Navigator.of(context).pop(); // ダイアログを閉じる
+                Navigator.of(context).pop();
               },
               child: const Text('そのまま'),
             ),
             TextButton(
               onPressed: () {
-                // 「出荷する」ボタンが押された場合の処理
-                onShip(); // 出荷処理のコールバックを呼び出す
-                Navigator.of(context).pop(); // ダイアログを閉じる
+                _handleShipping(context); // 出荷処理を実行
+                Navigator.of(context).pop();
               },
               child: const Text('出荷する'),
             ),
           ],
         );
       },
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Stack(
+      alignment: Alignment.center,
+      children: [
+        Positioned(
+          bottom: 16,
+          left: 16,
+          child: GestureDetector(
+            onTap: () => _showDialog(context), // ダイアログを表示
+            child: Stack(
+              alignment: Alignment.center,
+              children: [
+                Image.asset(
+                  'assets/images/box_empty.png',
+                  width: 100,
+                  height: 100,
+                ),
+                Text(
+                  '$counter/15', // カウント表示
+                  style: const TextStyle(
+                    color: Colors.white,
+                    fontSize: 24,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
+        Positioned(
+          bottom: 16,
+          left: 120, // 箱の横に配置するため位置調整
+          child: FloatingActionButton(
+            onPressed: _incrementCounter, // ＋ボタンでカウントを増やす
+            child: const Icon(Icons.add),
+          ),
+        ),
+      ],
     );
   }
 }

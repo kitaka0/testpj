@@ -44,13 +44,6 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
   late AnimationController _animationController;
   int counter = 0; // Boxのカウント値を初期化
 
-  // 作物をタップしたときにカウントを増やすメソッド
-  void _incrementCounter() {
-    setState(() {
-      counter++; // カウントを1増やす
-    });
-  }
-
   Future<void> _openUrl() async {
     const url = 'https://flutter.dev'; // 開くURL
     final Uri uri = Uri.parse(url); // URLをUriに変換
@@ -122,10 +115,7 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
           // 虫
           BugDisplay(),
           // 箱
-          BoxDisplay(
-            counter: counter,
-            onShip: () {},
-          ),
+          BoxDisplay(),
 
           // バナー（AppBarの下に配置）
           Positioned(
@@ -152,10 +142,6 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
             ),
           ),
         ],
-      ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: _incrementCounter, // ボタンを押したときにカウントを増やす
-        child: const Icon(Icons.add), // アイコンとして「+」を表示
       ),
     );
   }
