@@ -1,7 +1,8 @@
 import 'package:flutter/foundation.dart'; // Flutterの開発モードやデバッグモードの情報を取得するためのパッケージ
 import 'package:flutter/material.dart'; // Flutterの基本的なUIコンポーネントを提供するパッケージ
-import 'model/crops.dart'; // crops.dart をインポート
+import 'model/box.dart';
 import 'model/bugs.dart';
+import 'model/crops.dart'; // crops.dart をインポート
 import 'package:url_launcher/url_launcher.dart'; // URLを開くためのパッケージ
 
 void main() {
@@ -41,6 +42,23 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
   late AnimationController _animationController;
+  int counter = 0; // Boxのカウント値を初期化
+  void _handleShipping() {
+    setState(() {
+      counter = 0; // 出荷したのでカウントをリセット
+    });
+    // ここで出荷処理を行う（例: データベースへの送信や表示の更新）
+    if (kDebugMode) {
+      print('出荷しました');
+    }
+  }
+
+  // 作物をタップしたときにカウントを増やすメソッド
+  void _incrementCounter() {
+    setState(() {
+      counter++; // カウントを1増やす
+    });
+  }
 
   Future<void> _openUrl() async {
     const url = 'https://flutter.dev'; // 開くURL
@@ -112,6 +130,11 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
 
           // 虫
           BugDisplay(),
+          // 箱
+          BoxDisplay(
+            counter: counter, // 現在のカウント値
+            onShip: _handleShipping, // 出荷処理のコールバック
+          ),
 
           // バナー（AppBarの下に配置）
           Positioned(
@@ -138,6 +161,10 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
             ),
           ),
         ],
+      ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: _incrementCounter, // ボタンを押したときにカウントを増やす
+        child: const Icon(Icons.add), // アイコンとして「+」を表示
       ),
     );
   }
