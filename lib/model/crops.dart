@@ -69,7 +69,7 @@ final Crop crop = Crop(
 );
 
 // 作物をタップした時の処理
-void onCropTap(int index, VoidCallback refreshUI) {
+void onCropTap(VoidCallback refreshUI) {
   if (crop.stage == 0) {
     // 土の段階の場合、成長を開始
     crop.startGrowing(refreshUI);
@@ -109,7 +109,7 @@ class CropDisplayState extends State<CropDisplay> {
       mainAxisSize: MainAxisSize.min, // 子要素が画面全体を占めないように設定
       children: [
         GestureDetector(
-          onTap: () => onCropTap(0, refreshUI), // 作物がタップされたときの処理
+          onTap: () => onCropTap(refreshUI), // 作物がタップされたときの処理
           child: Padding(
             padding: const EdgeInsets.symmetric(horizontal: 8.0),
             child: Column(
