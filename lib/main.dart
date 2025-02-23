@@ -43,15 +43,6 @@ class MyHomePage extends StatefulWidget {
 class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
   late AnimationController _animationController;
   int counter = 0; // Boxのカウント値を初期化
-  void _handleShipping() {
-    setState(() {
-      counter = 0; // 出荷したのでカウントをリセット
-    });
-    // ここで出荷処理を行う（例: データベースへの送信や表示の更新）
-    if (kDebugMode) {
-      print('出荷しました');
-    }
-  }
 
   // 作物をタップしたときにカウントを増やすメソッド
   void _incrementCounter() {
@@ -132,8 +123,8 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
           BugDisplay(),
           // 箱
           BoxDisplay(
-            counter: counter, // 現在のカウント値
-            onShip: _handleShipping, // 出荷処理のコールバック
+            counter: counter,
+            onShip: () {},
           ),
 
           // バナー（AppBarの下に配置）
