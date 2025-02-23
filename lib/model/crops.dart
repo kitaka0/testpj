@@ -57,28 +57,25 @@ class Crop {
   }
 }
 
-// 作物リスト（3つの作物を生成）
-final List<Crop> crops = List.generate(
-  3, // 作物の数は3つ
-  (index) => Crop(
-    name: '作物$index', // 作物の名前
-    type: '植物', // 作物の種類
-    imageStages: [
-      'assets/images/planter.png', // 土の画像
-      'assets/images/seedling.png', // 苗の画像
-      'assets/images/watermelon.png', // スイカの画像
-    ],
-  ),
+// 作物を作成
+final Crop crop = Crop(
+  name: 'スイカ',
+  type: '植物',
+  imageStages: [
+    'assets/images/planter.png', // 土の画像
+    'assets/images/seedling.png', // 苗の画像
+    'assets/images/watermelon.png', // スイカの画像
+  ],
 );
 
 // 作物をタップした時の処理
 void onCropTap(int index, VoidCallback refreshUI) {
-  if (crops[index].stage == 0) {
+  if (crop.stage == 0) {
     // 土の段階の場合、成長を開始
-    crops[index].startGrowing(refreshUI);
-  } else if (crops[index].stage == 2) {
+    crop.startGrowing(refreshUI);
+  } else if (crop.stage == 2) {
     // スイカの段階の場合、リセット
-    crops[index].reset(refreshUI);
+    crop.reset(refreshUI);
   }
 }
 
@@ -111,6 +108,7 @@ class CropDisplayState extends State<CropDisplay> {
     return Column(
       mainAxisSize: MainAxisSize.min, // 子要素が画面全体を占めないように設定
       children: [
+<<<<<<< HEAD
         Row(
           mainAxisAlignment: MainAxisAlignment.center, // 作物を中央に配置
           children: List.generate(
@@ -153,15 +151,51 @@ class CropDisplayState extends State<CropDisplay> {
                                       fontWeight: FontWeight.bold, // フォントを太く
                                     ),
                                   ),
+=======
+        GestureDetector(
+          onTap: () => onCropTap(0, refreshUI), // 作物がタップされたときの処理
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 8.0),
+            child: Column(
+              children: [
+                Image.asset(
+                  crop.imagePath, // 最初の作物の画像を表示
+                  height: 100,
+                ),
+                // 苗の時だけプログレスバーを表示
+                if (crop.stage == 1)
+                  Padding(
+                    padding: const EdgeInsets.only(top: 8.0),
+                    child: SizedBox(
+                      width: 80,
+                      height: 20,
+                      child: Stack(
+                        children: [
+                          // プログレスバー
+                          LinearProgressIndicator(
+                            value: crop.progress,
+                            backgroundColor: Colors.grey[300],
+                            color: Colors.yellow,
+                          ),
+                          // 残り時間のテキスト
+                          Positioned.fill(
+                            child: Center(
+                              child: Text(
+                                _getRemainingTimeText(crop.progress),
+                                style: const TextStyle(
+                                  color: Colors.black,
+                                  fontSize: 12,
+                                  fontWeight: FontWeight.bold,
+>>>>>>> tko
                                 ),
                               ),
-                            ],
+                            ),
                           ),
-                        ),
+                        ],
                       ),
-                  ],
-                ),
-              ),
+                    ),
+                  ),
+              ],
             ),
           ),
         ),
