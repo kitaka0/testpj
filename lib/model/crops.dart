@@ -108,50 +108,6 @@ class CropDisplayState extends State<CropDisplay> {
     return Column(
       mainAxisSize: MainAxisSize.min, // 子要素が画面全体を占めないように設定
       children: [
-<<<<<<< HEAD
-        Row(
-          mainAxisAlignment: MainAxisAlignment.center, // 作物を中央に配置
-          children: List.generate(
-            crops.length, // 作物の数だけリストを生成
-            (index) => GestureDetector(
-              onTap: () => onCropTap(index, refreshUI), // 作物がタップされたときの処理
-              child: Padding(
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 8.0), // 左右に余白を追加
-                child: Column(
-                  children: [
-                    Image.asset(
-                      crops[index].imagePath, // 現在の成長段階に応じた画像を表示sdfdfsdf
-                      height: 100, // 画像の高さを100に設定
-                    ),
-                    // 苗の時だけプログレスバーを表示
-                    if (crops[index].stage == 1)
-                      Padding(
-                        padding: const EdgeInsets.only(top: 8.0),
-                        child: SizedBox(
-                          width: 80,
-                          height: 20,
-                          child: Stack(
-                            children: [
-                              // プログレスバー
-                              LinearProgressIndicator(
-                                value: crops[index].progress, // 現在の進行度
-                                backgroundColor: Colors.grey[300], // 背景色
-                                color: Colors.yellow, // 成長の進行を示す色（黄色）
-                              ),
-                              // 残り時間のテキスト
-                              Positioned.fill(
-                                child: Center(
-                                  child: Text(
-                                    _getRemainingTimeText(
-                                        crops[index].progress), // 残り時間のテキストを取得
-                                    style: const TextStyle(
-                                      color: Colors.black, // テキストの色（黒）
-                                      fontSize: 12, // フォントサイズ
-                                      fontWeight: FontWeight.bold, // フォントを太く
-                                    ),
-                                  ),
-=======
         GestureDetector(
           onTap: () => onCropTap(0, refreshUI), // 作物がタップされたときの処理
           child: Padding(
@@ -186,7 +142,6 @@ class CropDisplayState extends State<CropDisplay> {
                                   color: Colors.black,
                                   fontSize: 12,
                                   fontWeight: FontWeight.bold,
->>>>>>> tko
                                 ),
                               ),
                             ),
