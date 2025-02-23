@@ -5,6 +5,8 @@ import 'package:flutter/foundation.dart'; // デバッグ
 
 // 虫のクラス
 class Bug {
+  //
+  int id;
   // 現在の位置
   double topPosition;
   double leftPosition;
@@ -14,6 +16,7 @@ class Bug {
   late Animation<double> animation;
 
   Bug({
+    required this.id,
     required this.topPosition,
     required this.leftPosition,
   });
@@ -70,32 +73,51 @@ class BugDisplayState extends State<BugDisplay> with TickerProviderStateMixin {
     });
   }
 
-  // 虫作成
+  // 虫作成処理
   void _createBug() {
-    // 3匹以上の場合は虫を追加しない
-    if (_bugs.length >= 3) {
-      return;
-    }
-
-    if (kDebugMode) print('虫 ${_bugs.length + 1} 匹目を追加');
-
     setState(() {
       // 虫
+      int bugId;
       double initialTopPosition = 100.0;
       double initialLeftPosition = 0.0;
-      switch (_bugs.length) {
-        case 0:
+
+      // すでにいる虫のIDを取得
+      List<int> bugIdList = _bugs.map((b) => b.id).toList();
+      List<int> allIds = [1, 2, 3]; // 可能なID
+
+      // いないIDリストを作成
+      List<int> availableIds =
+          allIds.where((id) => !bugIdList.contains(id)).toList();
+
+      // idの決定
+      if (availableIds.isNotEmpty) {
+        // 空き位置にランダムで出現
+        bugId = availableIds[_random.nextInt(availableIds.length)];
+        if (kDebugMode) print('虫 ${_bugs.length + 1} 匹目を追加');
+        print("生成された bugId: $bugId");
+      } else {
+        // すでに3匹いる場合終了
+        return;
+      }
+
+      // 出現位置を判定
+      switch (bugId) {
+        case 1:
           initialLeftPosition = 70.0;
           break;
-        case 1:
+        case 2:
           initialLeftPosition = 180.0;
           break;
-        case 2:
+        case 3:
           initialLeftPosition = 290.0;
           break;
       }
+
+      // 虫を作成
       Bug newBug = Bug(
-          topPosition: initialTopPosition, leftPosition: initialLeftPosition);
+          id: bugId,
+          topPosition: initialTopPosition,
+          leftPosition: initialLeftPosition);
 
       // AnimationControllerの定義
       newBug.controller = AnimationController(
