@@ -1,6 +1,7 @@
 import 'package:flutter/foundation.dart'; // Flutterの開発モードやデバッグモードの情報を取得するためのパッケージ
 import 'package:flutter/material.dart'; // Flutterの基本的なUIコンポーネントを提供するパッケージ
 import 'model/crops.dart'; // crops.dart をインポート
+import 'model/bugs.dart';
 import 'package:url_launcher/url_launcher.dart'; // URLを開くためのパッケージ
 
 void main() {
@@ -109,6 +110,9 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
           // 画面中央にスイカたちを横並びで表示
           const Center(child: CropDisplay()), // crops.dartから呼びだしてるらしい
 
+          // 虫
+          BugDisplay(),
+
           // バナー（AppBarの下に配置）
           Positioned(
             top: kToolbarHeight + 70, // ← AppBarの高さ分下げる
@@ -178,5 +182,3 @@ class SettingsPage extends StatelessWidget {
     );
   }
 }
-
-//
