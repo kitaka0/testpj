@@ -44,6 +44,7 @@ class MyHomePage extends StatefulWidget {
 class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
   // cropのGlobalKeyを作成
   final GlobalKey<CropDisplayState> cropKey = GlobalKey<CropDisplayState>();
+  final GlobalKey<BoxDisplayState> boxKey = GlobalKey<BoxDisplayState>();
 
   int counter = 0;
   List<String> shipmentHistory = [];
@@ -66,9 +67,9 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
       body: Stack(
         children: [
           const Background(),
-          Center(child: CropDisplay(key: cropKey)),
+          Center(child: CropDisplay(key: cropKey, boxKey: boxKey)),
           BugDisplay(),
-          BoxDisplay(onShipment: _updateShipmentHistory),
+          BoxDisplay(key: boxKey, onShipment: _updateShipmentHistory),
           WaterDisplay(cropkey: cropKey),
           CustomBanner(
             onTap: () {

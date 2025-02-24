@@ -1,6 +1,8 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 
+import 'box.dart';
+
 // 作物のクラス
 class Crop {
   final String name; // 作物の名前
@@ -22,7 +24,8 @@ class Crop {
 
 // 中央の作物を表示するウィジェット
 class CropDisplay extends StatefulWidget {
-  const CropDisplay({super.key});
+  final GlobalKey<BoxDisplayState> boxKey;
+  const CropDisplay({super.key, required this.boxKey});
 
   @override
   CropDisplayState createState() => CropDisplayState();
@@ -78,6 +81,8 @@ class CropDisplayState extends State<CropDisplay> {
     if (crop.stage == 1) {
       startGrowing();
     } else if (crop.stage == 3) {
+      // スイカの段階で箱のカウントを増やす
+      widget.boxKey.currentState?.incrementCounterFromOutside();
       // スイカの段階の場合、リセット
       reset();
     }

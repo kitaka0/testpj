@@ -20,6 +20,12 @@ class BoxDisplayState extends State<BoxDisplay> {
     });
   }
 
+  void incrementCounterFromOutside() {
+    setState(() {
+      counter++;
+    });
+  }
+
   // 出荷処理（15以上で出荷、出荷後はカウントを15減らす）
   void _handleShipping(BuildContext context) {
     if (counter >= 15) {
