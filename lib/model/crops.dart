@@ -6,7 +6,7 @@ class Crop {
   final String name; // 作物の名前
   final String type; // 作物の種類
   final List<String> imageStages; // 各成長段階に対応する画像のリスト
-  int stage; // 0: 土, 1: 苗, 2: スイカ (成長段階)
+  int stage; // 0: 乾いた土, 1: 湿った土 2: 苗, 3: スイカ (成長段階)
   double progress; // 成長の進行度（0.0 〜 1.0）
   Timer? timer; // 成長を管理するタイマー
 
@@ -35,7 +35,8 @@ class CropDisplayState extends State<CropDisplay> {
     name: 'スイカ',
     type: '植物',
     imageStages: [
-      'assets/images/planter.png', // 土の画像
+      'assets/images/planter.png', // 乾いた土の画像
+      'assets/images/planter.png', // 湿った土の画像
       'assets/images/seedling.png', // 苗の画像
       'assets/images/watermelon.png', // スイカの画像
     ],
@@ -53,48 +54,65 @@ class CropDisplayState extends State<CropDisplay> {
   // 現在の段階に応じた画像パスを返すゲッター
   String get imagePath => crop.imageStages[crop.stage];
 
-  // 成長を開始するメソッド
-  void startGrowing() {
+  // 土用の変数
+  double soil_max_num = 5.0;
+  double soil_num = 0.0;
+
+  // 水がタップされた時の処理
+  void onWaterTap() {
     if (crop.stage == 0) {
       // 土の段階の場合
-      crop.stage = 1; // 苗に変更
-      crop.progress = 0.0; // 進行度をリセット
-      setState(() {}); // UIを更新
+      soil_num += 1.0;
 
-      crop.timer?.cancel(); // 既存のタイマーがあればキャンセル
-      crop.timer = Timer.periodic(const Duration(seconds: 1), (timer) {
-        if (crop.progress < 1.0) {
-          crop.progress += 0.1; // 1秒ごとに10%成長
-          setState(() {}); // UIを更新
-        } else {
-          crop.stage = 2; // スイカに変更
-          crop.progress = 0.0; // 進行度をリセット
-          timer.cancel(); // タイマーを停止
-          setState(() {}); // UIを更新
-        }
-      });
+      // 最大に達したら次の段階へ
+      if (soil_num >= soil_max_num) {
+        print("濡れた土");
+        crop.stage = 1;
+      }
     }
-  }
-
-  // スイカをタップした場合にリセットするメソッド
-  void reset() {
-    if (crop.stage == 2) {
-      // スイカの段階の場合
-      crop.stage = 0; // 土にリセット
-      crop.progress = 0.0; // 進行度をリセット
-      crop.timer?.cancel(); // タイマーをキャンセル
-      setState(() {}); // UIを更新
-    }
+    setState(() {}); // UIを更新
   }
 
   // 作物をタップした時の処理
   void onCropTap() {
-    if (crop.stage == 0) {
-      // 土の段階の場合、成長を開始
+    if (crop.stage == 1) {
       startGrowing();
-    } else if (crop.stage == 2) {
+    } else if (crop.stage == 3) {
       // スイカの段階の場合、リセット
       reset();
+    }
+    setState(() {}); // UIを更新
+  }
+
+  // 成長を開始するメソッド
+  void startGrowing() {
+    crop.stage = 2; // 苗に変更
+    crop.progress = 0.0; // 進行度をリセット
+    setState(() {}); // UIを更新
+
+    crop.timer?.cancel(); // 既存のタイマーがあればキャンセル
+    crop.timer = Timer.periodic(const Duration(seconds: 1), (timer) {
+      if (crop.progress < 1.0) {
+        crop.progress += 0.1; // 1秒ごとに10%成長
+        setState(() {}); // UIを更新
+      } else {
+        crop.stage = 3; // スイカに変更
+        crop.progress = 0.0; // 進行度をリセット
+        timer.cancel(); // タイマーを停止
+        setState(() {}); // UIを更新
+      }
+    });
+  }
+
+  // スイカをタップした場合にリセットするメソッド
+  void reset() {
+    if (crop.stage == 3) {
+      // スイカの段階の場合
+      crop.stage = 0; // 土にリセット
+      crop.progress = 0.0; // 進行度をリセット
+      soil_num = 0.0; // 土の成長度をリセット
+      crop.timer?.cancel(); // タイマーをキャンセル
+      setState(() {}); // UIを更新
     }
   }
 
@@ -109,12 +127,46 @@ class CropDisplayState extends State<CropDisplay> {
             padding: const EdgeInsets.symmetric(horizontal: 8.0),
             child: Column(
               children: [
+                // 作物
                 Image.asset(
-                  imagePath, // 最初の作物の画像を表示
+                  imagePath,
                   height: 100,
                 ),
-                // 苗の時だけプログレスバーを表示
-                if (crop.stage == 1)
+                // バー表示
+                // 土の時
+                if (crop.stage == 0)
+                  Padding(
+                    padding: const EdgeInsets.only(top: 8.0),
+                    child: SizedBox(
+                      width: 80,
+                      height: 20,
+                      child: Stack(
+                        children: [
+                          // プログレスバー
+                          LinearProgressIndicator(
+                            value: soil_num / soil_max_num,
+                            backgroundColor: Colors.grey[300],
+                            color: Colors.yellow,
+                          ),
+                          // バー下のテキスト
+                          Positioned.fill(
+                            child: Center(
+                              child: Text(
+                                "水押して",
+                                style: const TextStyle(
+                                  color: Colors.black,
+                                  fontSize: 12,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                // 苗の時
+                if (crop.stage == 2)
                   Padding(
                     padding: const EdgeInsets.only(top: 8.0),
                     child: SizedBox(

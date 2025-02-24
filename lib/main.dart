@@ -7,6 +7,7 @@ import 'common/custom_app_bar.dart';
 import 'model/box.dart';
 import 'model/bugs.dart';
 import 'model/crops.dart';
+import 'model/water.dart';
 
 void main() {
   runApp(const MyApp());
@@ -41,6 +42,9 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
+  // cropのGlobalKeyを作成
+  final GlobalKey<CropDisplayState> cropKey = GlobalKey<CropDisplayState>();
+
   int counter = 0;
   List<String> shipmentHistory = [];
 
@@ -62,9 +66,10 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
       body: Stack(
         children: [
           const Background(),
-          const Center(child: CropDisplay()),
+          Center(child: CropDisplay(key: cropKey)),
           BugDisplay(),
           BoxDisplay(onShipment: _updateShipmentHistory),
+          WaterDisplay(cropkey: cropKey),
           CustomBanner(
             onTap: () {
               const url = 'https://flutter.dev';
