@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
-import 'account.dart';
-import 'background.dart';
-import 'banner.dart';
-import 'custom_app_bar.dart';
+import 'common/account.dart';
+import 'common/background.dart';
+import 'common/banner.dart';
+import 'common/custom_app_bar.dart';
 import 'model/box.dart';
 import 'model/bugs.dart';
 import 'model/crops.dart';

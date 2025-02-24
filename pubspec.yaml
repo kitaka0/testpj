@@ -91,7 +91,6 @@ flutter:
   # see https://flutter.dev/to/font-from-package
 
   assets:
-    - assets/account-BG.jpg
     - assets/background.jpg
     - assets/images/
     

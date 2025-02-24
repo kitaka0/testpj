@@ -51,7 +51,7 @@ class _AccountPageState extends State<AccountPage> {
           // 背景画像を設定
           Positioned.fill(
             child: Image.asset(
-              'assets/account-BG.jpg',
+              'assets/images/account-BG.jpg',
               fit: BoxFit.cover,
             ),
           ),
